@@ -5,11 +5,12 @@
 Module for computer vision (image processing) related functions.
 """
 
-import numpy as np
+import numpy   as np
 
 from scipy.signal  import medfilt2d
 
 __all__ = [
+    "calc_histequal_wgt",
     "selective_median_filter",
 ]
 
@@ -41,3 +42,21 @@ def selective_median_filter(img, threshold=None, kernel_size=3):
                     img,
                     _img_median,
                    )
+
+
+def calc_histequal_wgt(img):
+    """
+    Calculate the histogram equalization weight for a given image
+
+    Parameters
+    ----------
+    img : ndarray
+        2D images
+
+    Returns
+    -------
+    ndarray
+        histogram euqalization weights (0-1) in the same shape as original
+        image
+    """
+    return (np.sort(img.flatten()).searchsorted(img) + 1)/np.prod(img.shape)
