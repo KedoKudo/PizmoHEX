@@ -2,19 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-Module for preprocessing tomography data collected with high-energy X-ray 
-(synchrotron radiation) source. 
+Module for preprocessing tomography data collected with high-energy X-ray
+(synchrotron radiation) source.
 """
 
-import logging
 import numpy              as np
 import concurrent.futures as cf
 import multiprocessing    as mp
 
 from scipy.signal  import medfilt2d
 from scipy.ndimage import gaussian_filter
-
-logger = logging.getLogger(__name__)
 
 __all__ = [
     "sino_normalize_background_aps_1id",
@@ -24,7 +21,7 @@ __all__ = [
 
 def sino_normalize_background_aps_1id(sino, beam_is_moving=True):
     """
-    Normalize the background (air) in each row of the sinogram (before 
+    Normalize the background (air) in each row of the sinogram (before
     minus_log)
 
     Parameters
@@ -32,8 +29,8 @@ def sino_normalize_background_aps_1id(sino, beam_is_moving=True):
     sino: ndarray
         2D sinograms with the unit of counts
     beam_is_moving: bool
-        If the beam is assumed to be moving (default Ture), linear interpolation
-        is required during background normalization
+        If the beam is assumed to be moving (default Ture), linear 
+        interpolation is required during background normalization
 
     Returns
     -------
@@ -46,9 +43,9 @@ def sino_normalize_background_aps_1id(sino, beam_is_moving=True):
     # use median filter and gaussian filter to locate the sample region
     # -- median filter is to counter impulse noise
     # -- gaussian filter is for estimating the sample location
-    prof = np.gradient(np.sum(gaussian_filter(medfilt2d(sino, 
+    prof = np.gradient(np.sum(gaussian_filter(medfilt2d(sino,
                                                         kernel_size=3,
-                                                        ), 
+                                                        ),
                                               sigma=50,
                                              ),
                               axis=0,
