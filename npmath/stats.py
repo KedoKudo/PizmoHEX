@@ -106,3 +106,23 @@ def calc_affine_transform(pts_source, pts_target):
     #   to get the correct rotation
 
     return sp.linalg.lstsq(pad(pts_source), pad(pts_target))[0].T
+
+
+def val_at_percentage(array, percentage):
+    """
+    Find the value at the given percentage in the histogram of a the given
+    nd-array
+
+    Parameters
+    ----------
+    array: ndarray
+        data source
+    percentage: float
+        percentage of interest
+    
+    Returns
+    -------
+    float
+        value at given percentage in the histogram of input array
+    """
+    return np.sort(array.flatten())[int(np.prod(array.shape)*percentage)]
