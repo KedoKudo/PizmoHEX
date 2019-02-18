@@ -6,9 +6,9 @@ Module for preprocessing tomography data collected with high-energy X-ray
 (synchrotron radiation) source.
 """
 
-import numpy              as np
 import concurrent.futures as cf
 import multiprocessing    as mp
+import numpy              as np
 
 from scipy.signal  import medfilt2d
 from scipy.ndimage import gaussian_filter
@@ -29,7 +29,7 @@ def sino_normalize_background_aps_1id(sino, beam_is_moving=True):
     sino: ndarray
         2D sinograms with the unit of counts
     beam_is_moving: bool
-        If the beam is assumed to be moving (default Ture), linear 
+        If the beam is assumed to be moving (default Ture), linear
         interpolation is required during background normalization
 
     Returns
@@ -53,33 +53,33 @@ def sino_normalize_background_aps_1id(sino, beam_is_moving=True):
                       )
 
     # find the left and right bound of the sample
-    edgeLeft = max(prof.argmin(), 11)  #
-    edgeRigth = min(prof.argmax(), sino.shape[1]-11)
+    edge_left = max(prof.argmin(), 11)  #
+    edge_right = min(prof.argmax(), sino.shape[1]-11)
 
     # locate the left and right background
-    bgL = np.average(sino[:, 1:edgeLeft], axis=1)
-    bgR = np.average(sino[:, edgeRigth:-1], axis=1)
+    bg_left = np.average(sino[:, 1:edge_left], axis=1)
+    bg_right = np.average(sino[:, edge_right:-1], axis=1)
 
     # calculate alpha
-    alpha = np.ones_like(sino)
+    alpha = np.ones(sino.shape)
     # NOTE:
     #   If the beam is wobbling horizontally, it is necessary
     #   to perform the interpolation.
     #   Otherwise, simple average would sufice.
     if beam_is_moving:
-        for n in range(alpha.shape[0]):
-            alpha[n, :] = np.linspace(bgL[n], bgR[n], alpha.shape[1])
+        for nrow in range(alpha.shape[0]):
+            alpha[nrow, :] = np.linspace(bg_left[nrow], bg_right[nrow], alpha.shape[1])
     else:
-        alpha *= ((bgL+bgR)/2)[:, None]
+        alpha *= ((bg_left+bg_right)/2)[:, None]
 
     return (sino/alpha)**2
 
 
-def tomo_normalize_background_aps_1id(tomo, 
-                                      beam_is_moving=True, 
+def tomo_normalize_background_aps_1id(tomo,
+                                      beam_is_moving=True,
                                       ncore=None):
     """
-    Normalize the background of the given tomo stack (before -log) to 
+    Normalize the background of the given tomo stack (before -log) to
     one (air, no attenuation).
 
     Parameters
@@ -99,11 +99,11 @@ def tomo_normalize_background_aps_1id(tomo,
     ncore = mp.cpu_count()-1 if ncore is None else ncore
 
     tmp = []
-    with cf.ProcessPoolExecutor(ncore) as e:
+    with cf.ProcessPoolExecutor(ncore) as exer:
         for n_sino in range(tomo.shape[1]):
-            tmp.append(e.submit(sino_normalize_background_aps_1id,
-                                tomo[:, n_sino, :],
-                                beam_is_moving=beam_is_moving,
-                                )
-                       )
+            tmp.append(exer.submit(sino_normalize_background_aps_1id,
+                                   tomo[:, n_sino, :],
+                                   beam_is_moving=beam_is_moving,
+                                  )
+                      )
     return np.stack([me.result() for me in tmp], axis=1)
