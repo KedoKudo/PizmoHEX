@@ -12,7 +12,7 @@ The name __PizmoHEX__ has three components:
 
 ## Recommended Packages for Data Processing
 
-| data type | Software |     |
+| data type | Software | Software(alt)    |
 | --------- | -------- | --- |
 | Tomography reconstruction | [tomopy](https://github.com/tomopy/tomopy) | [tomoMPI](https://github.com/KedoKudo/tomompi) |
 | FF-HEDM | [hexrd](https://github.com/praxes/hexrd) | [MIDAS](https://github.com/marinerhemant/MIDAS) |
