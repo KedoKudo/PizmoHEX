@@ -21,7 +21,7 @@ def selective_median_filter(img, threshold=None, kernel_size=3):
 
     Parameters
     ----------
-    img : ndarray
+    img: ndarray
         2D images
     threshold: float
         Expected difference between impulse noise and the meidan
@@ -50,7 +50,7 @@ def calc_histequal_wgt(img):
 
     Parameters
     ----------
-    img : ndarray
+    img: ndarray
         2D images
 
     Returns
@@ -60,3 +60,28 @@ def calc_histequal_wgt(img):
         image
     """
     return (np.sort(img.flatten()).searchsorted(img) + 1)/np.prod(img.shape)
+
+def svd_enhance(img, eigen_cut=None):
+    """
+    Reduce noise and compress image using Singular Value Decomposition
+
+    Parameters
+    ----------
+    img:  ndarray
+        2D images
+    eigen_cut: int
+        the number of primary eigen features retained in returning image
+
+    Returns
+    ndarray
+        Image after the SVD denosing/compression.
+    -------
+    """
+    __U, __S, __V = np.linalg.svd(img, full_matrices=True)
+    # NOTE:
+    # Use the strongest 80% eigen features by default
+    if eigen_cut is None:
+        eigen_cut = int(0.8*min(__U.shape[1], __V.shape[0]))  
+    else:
+        eigen_cut = eigen_cut
+    return np.dot(__U[:,:eigen_cut]*__S[:eigen_cut], __V[:eigen_cut,:])
