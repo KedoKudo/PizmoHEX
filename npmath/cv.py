@@ -85,3 +85,28 @@ def svd_enhance(img, eigen_cut=None):
     else:
         eigen_cut = eigen_cut
     return np.dot(__U[:,:eigen_cut]*__S[:eigen_cut], __V[:eigen_cut,:])
+
+
+def rescale_image(img, minval=0, maxval=1):
+    '''
+    Rescale givem image intesnity between 0 and 1 through linear
+    interpolcation.
+
+    Parameters
+    ----------
+    img: ndarray
+        2D image for rescaling
+    minval: float
+        Intensity lower bound after rescaling
+    maxval: float
+        Intensity upper bound fater rescaling
+
+    Returns
+    -------
+    ndarray
+        Rescaled image
+    '''
+    img = np.array(img)
+    img = img - img.min() + minval
+    img = img/(img.max()) 
+    return img * maxval
