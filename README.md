@@ -17,5 +17,3 @@ The name __PizmoHEX__ has three components:
 | Tomography reconstruction | [tomopy](https://github.com/tomopy/tomopy) | [tomoMPI](https://github.com/KedoKudo/tomompi) |
 | FF-HEDM | [hexrd](https://github.com/praxes/hexrd) | [MIDAS](https://github.com/marinerhemant/MIDAS) |
 | NF-HEDM | [HEXOMAP](https://github.com/HeLiuCMU/HEXOMAP) | [MIDAS](https://github.com/marinerhemant/MIDAS)
-
-> [HEXOMAP](https://github.com/HeLiuCMU/HEXOMAP) is currently an invite only software under active development.
